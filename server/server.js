@@ -8,7 +8,9 @@ Meteor.methods({
         }
     },
     joinGame: function (game_id) {
+        // In simplest implementation, there is only one game
         game = Games.findOne({_id:game_id});
+        // Allow incoming user to join if there is no other guest already playing the owner
         if (game.guest === null) {
             Games.update({_id:game_id}, {$set:{guest:this.userId, guest_name:"Player2", game_status:"started"}});
             return true;
@@ -39,7 +41,7 @@ Meteor.methods({
             Games.update({_id:game_id}, {$inc:{ties:1,total_games:1}});
             return {result: "It's a tie!"};
         }
-        // The next part is ugly and hardcoded
+        // The next part is hardcoded
         // List out all conditions where player 1 wins
         if ((game.owner_selection == "rock" && game.guest_selection == "scissors") || (game.owner_selection == "scissors" && game.guest_selection == "paper") || (game.owner_selection == "paper" && game.guest_selection == "rock")) {
             Games.update({_id:game_id}, {$inc:{owner_wins:1,total_games:1}});
@@ -51,6 +53,7 @@ Meteor.methods({
             return {result: "Player 2 wins!"};
         }
     },
+    // Function to reset selections of both players to null so they can start next round
     resetGame: function (game_id) {
         Games.update({_id:game_id}, {$set:{owner_selection:null, guest_selection: null}});
     }

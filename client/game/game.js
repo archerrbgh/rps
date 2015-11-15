@@ -16,10 +16,8 @@ Template.game.events({
     "click .btn-option": function (event) {
         // Get choice based on id of button clicked
         var choice = event.currentTarget.attributes.id.value;
-        console.log(choice);
         // There is only one game
         game_id = Games.findOne()._id;
-        console.log(game_id);
         Meteor.call('sendChoice', game_id, choice);
         Session.set('current_interval', Meteor.setInterval(checkGame,5000));
     }
